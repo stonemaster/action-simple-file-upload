@@ -19,6 +19,10 @@ inputs:
     description: 'Should use FTPS?'
     required: false
     default: false
+  glob:
+    description: 'Specifies whether `src` contains glob expression'
+    required: false
+    default: false
   src: 
     description: 'Path to file to upload'
     required: true
