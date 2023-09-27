@@ -14,7 +14,7 @@ export interface Options {
 }
 
 async function getFiles (options: Options) {
-  if (options.glob == 'true') {
+  if (options.glob === 'true') {
     const globbedFiles = await glob(options.src)
     return globbedFiles.map(filename => parse(filename)).map(path => posix.join(path.dir, path.base))
   } else {
@@ -25,7 +25,7 @@ async function getFiles (options: Options) {
 
 export default async function(options: Options) {
   const ftpClient = new ftp.Client()
-  const sources = getFiles(options)
+  const sources = await getFiles(options)
   const parsedDest = parse(options.dest)
   const secure = options.secure === 'true' || (options.secure === 'implicit' ? 'implicit' : false)
 
