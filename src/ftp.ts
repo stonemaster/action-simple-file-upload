@@ -33,6 +33,11 @@ export default async function(options: Options) {
   const parsedDest = parse(options.dest)
   const secure = options.secure === 'true' || (options.secure === 'implicit' ? 'implicit' : false)
 
+  console.log("options = " + options)
+  console.log("sources = " + sources)
+
+  console.log("trying access to = " + options.host)
+
   await ftpClient.access({
     host: options.host,
     port: parseInt(options.port, 10),
@@ -42,8 +47,10 @@ export default async function(options: Options) {
   })
 
   try {
+    console.log("trying access to = " + parsedDest.dir)
     await ftpClient.ensureDir(parsedDest.dir)
     for (const source of sources) {
+      console.log("uploading source -> " + source)
       await ftpClient.uploadFrom(source, parsedDest.base)
     }
 

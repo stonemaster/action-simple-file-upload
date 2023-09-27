@@ -1,4 +1,4 @@
-on: 
+on:
   push:
     branches:
       - master
@@ -18,26 +18,33 @@ jobs:
         with:
           node-version: 16
 
-      - name: Check if version has been updated 
-        id: check
-        uses: EndBug/version-check@v1.2.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          diff-search: true
-
-      - name: Create release branch
-        if: steps.check.outputs.changed == 'true'
-        uses: peterjgrainger/action-create-branch@v2.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: release
+      # - name: Check if version has been updated
+      #   id: check
+      #   uses: EndBug/version-check@v1.2.2
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     diff-search: true
+      #
+      # - name: Create release branch
+      #   if: steps.check.outputs.changed == 'true'
+      #   uses: peterjgrainger/action-create-branch@v2.0.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     branch: release
 
       - name: Install Dependencies
         run: npm ci
 
       - name: Build
         run: npm run build
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: |
+            dist
 
       - name: Push to release branch
         if: steps.check.outputs.changed == 'true'
