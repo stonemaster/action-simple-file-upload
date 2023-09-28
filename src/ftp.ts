@@ -48,11 +48,11 @@ export default async function(options: Options) {
 
   try {
     console.log("trying access to = " + parsedDest.dir)
-    await ftpClient.ensureDir(options.dest)
+    await ftpClient.ensureDir(parsedDest.dir)
     for (const source of sources) {
       console.log("uploading source -> " + source)
-      console.log("uploading TO -> " + options.dest)
-      await ftpClient.uploadFrom(source, options.dest)
+      console.log("uploading TO -> " + parsedDest.base + "/")
+      await ftpClient.uploadFrom(source, parsedDest.base + "/")
     }
 
     return sources
