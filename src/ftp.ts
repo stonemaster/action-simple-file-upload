@@ -16,7 +16,11 @@ export interface Options {
 async function getFiles (options: Options) {
   if (options.glob === 'true') {
     const globbedFiles = await glob(options.src)
-    return globbedFiles.map(filename => parse(filename)).map(path => posix.join(path.dir, path.base))
+    const files = globbedFiles.map(filename => parse(filename)).map(path => posix.join(path.dir, path.base))
+    if (files.length == 0) {
+      throw new Error("glob didn't match any files to upload")
+    }
+    return files
   } else {
     const parsedSource = parse(options.src)
     return [posix.join(parsedSource.dir, parsedSource.base)]
