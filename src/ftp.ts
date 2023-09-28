@@ -43,7 +43,7 @@ export default async function(options: Options) {
 
   try {
     await ftpClient.ensureDir(parsedDest.dir)
-    for (const source in sources) {
+    for (const source of sources) {
       await ftpClient.uploadFrom(source, parsedDest.base)
     }
 
