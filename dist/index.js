@@ -1218,7 +1218,7 @@ async function default_1(options) {
     console.log("sources = " + sources);
     console.log("trying access to = " + options.host);
     if (!destIsDirectory && sources.length > 1) {
-        new Error("glob returned more than one file, but the `dest` is not a directory");
+        throw new Error("glob returned more than one file, but the `dest` is not a directory");
     }
     await ftpClient.access({
         host: options.host,
