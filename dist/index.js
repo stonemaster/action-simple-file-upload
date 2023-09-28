@@ -1212,6 +1212,7 @@ async function default_1(options) {
     const ftpClient = new ftp.Client();
     const sources = await getFiles(options);
     const parsedDest = (0, path_1.parse)(options.dest);
+    const destIsDirectory = options.dest.at(-1) === '/';
     const secure = options.secure === 'true' || (options.secure === 'implicit' ? 'implicit' : false);
     console.log("options = " + options);
     console.log("sources = " + sources);
@@ -1227,9 +1228,12 @@ async function default_1(options) {
         console.log("trying access to = " + parsedDest.dir);
         await ftpClient.ensureDir(parsedDest.dir);
         for (const source of sources) {
+            const remote = destIsDirectory
+                ? (0, path_1.join)(parsedDest.base, (0, path_1.parse)(source).base)
+                : parsedDest.base;
             console.log("uploading source -> " + source);
-            console.log("uploading TO -> " + parsedDest.base + "/");
-            await ftpClient.uploadFrom(source, parsedDest.base + "/");
+            console.log("uploading TO -> " + remote);
+            await ftpClient.uploadFrom(source, remote);
         }
         return sources;
     }
