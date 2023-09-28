@@ -1197,7 +1197,11 @@ const fast_glob_1 = __webpack_require__(406);
 async function getFiles(options) {
     if (options.glob === 'true') {
         const globbedFiles = await (0, fast_glob_1.glob)(options.src);
-        return globbedFiles.map(filename => (0, path_1.parse)(filename)).map(path => path_1.posix.join(path.dir, path.base));
+        const files = globbedFiles.map(filename => (0, path_1.parse)(filename)).map(path => path_1.posix.join(path.dir, path.base));
+        if (files.length == 0) {
+            throw new Error("glob didn't match any files to upload");
+        }
+        return files;
     }
     else {
         const parsedSource = (0, path_1.parse)(options.src);
@@ -1222,7 +1226,7 @@ async function default_1(options) {
     try {
         console.log("trying access to = " + parsedDest.dir);
         await ftpClient.ensureDir(parsedDest.dir);
-        for (const source in sources) {
+        for (const source of sources) {
             console.log("uploading source -> " + source);
             await ftpClient.uploadFrom(source, parsedDest.base);
         }
