@@ -1,5 +1,5 @@
 import * as ftp from 'basic-ftp'
-import { parse, posix } from 'path'
+import { join, parse, posix } from 'path'
 import { glob } from 'fast-glob'
 
 export interface Options {
@@ -31,6 +31,7 @@ export default async function(options: Options) {
   const ftpClient = new ftp.Client()
   const sources = await getFiles(options)
   const parsedDest = parse(options.dest)
+  const destIsDirectory = options.dest.at(-1) === '/'
   const secure = options.secure === 'true' || (options.secure === 'implicit' ? 'implicit' : false)
 
   console.log("options = " + options)
@@ -50,9 +51,13 @@ export default async function(options: Options) {
     console.log("trying access to = " + parsedDest.dir)
     await ftpClient.ensureDir(parsedDest.dir)
     for (const source of sources) {
+      const remote = destIsDirectory
+        ? join(parsedDest.base, parse(source).base)
+        : parsedDest.base
+
       console.log("uploading source -> " + source)
-      console.log("uploading TO -> " + parsedDest.base + "/")
-      await ftpClient.uploadFrom(source, parsedDest.base + "/")
+      console.log("uploading TO -> " + remote)
+      await ftpClient.uploadFrom(source, remote)
     }
 
     return sources
