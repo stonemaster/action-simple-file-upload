@@ -1228,6 +1228,7 @@ async function default_1(options) {
         await ftpClient.ensureDir(parsedDest.dir);
         for (const source of sources) {
             console.log("uploading source -> " + source);
+            console.log("uploading TO -> " + parsedDest.base);
             await ftpClient.uploadFrom(source, parsedDest.base);
         }
         return sources;
